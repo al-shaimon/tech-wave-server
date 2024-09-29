@@ -11,13 +11,15 @@ import globalErrorHandler from './app/middleWares/globalErrorHandler';
 
 const app: Application = express();
 
+app.use(cookieParser());
+
+//cors
 app.use(
   cors({
+    origin: ['http://localhost:3000', 'https://tech-wave-client.vercel.app'],
     credentials: true,
-    origin: [config.client_url as string],
   })
 );
-app.use(cookieParser());
 
 //parser
 app.use(express.json());
