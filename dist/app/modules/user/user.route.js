@@ -1,0 +1,21 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.AuthRoutes = void 0;
+const express_1 = __importDefault(require("express"));
+const user_controller_1 = require("./user.controller");
+const validateRequest_1 = __importDefault(require("../../middleWares/validateRequest"));
+const user_validation_1 = require("./user.validation");
+const authMiddleware_1 = __importDefault(require("./authMiddleware"));
+const adminMiddleware_1 = require("./adminMiddleware");
+const router = express_1.default.Router();
+router.post('/signup', (0, validateRequest_1.default)(user_validation_1.AuthValidations.userValidationSchema), user_controller_1.AuthControllers.signup);
+router.post('/signin', user_controller_1.AuthControllers.signin);
+router.post('/forget-password', (0, validateRequest_1.default)(user_validation_1.AuthValidations.forgetPasswordSchema), user_controller_1.AuthControllers.forgetPassword);
+router.post('/reset-password/:token', (0, validateRequest_1.default)(user_validation_1.AuthValidations.resetPasswordSchema), user_controller_1.AuthControllers.resetPassword);
+router.post('/update-profile', authMiddleware_1.default, (0, validateRequest_1.default)(user_validation_1.AuthValidations.updateProfileSchema), user_controller_1.AuthControllers.updateProfile);
+router.put('/admin/users/:userId', authMiddleware_1.default, adminMiddleware_1.adminMiddleware, (0, validateRequest_1.default)(user_validation_1.AuthValidations.updateUserAsAdminSchema), user_controller_1.AuthControllers.updateUserAsAdmin);
+router.get('/admin/users', authMiddleware_1.default, adminMiddleware_1.adminMiddleware, user_controller_1.AuthControllers.getAllUsers);
+exports.AuthRoutes = router;
