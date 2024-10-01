@@ -16,8 +16,16 @@ export const signup = async (
   next: NextFunction
 ) => {
   try {
-    const { name, email, role, isVerified, password, confirmPassword, phone } =
-      req.body;
+    const {
+      name,
+      email,
+      role,
+      isVerified,
+      password,
+      confirmPassword,
+      phone,
+      profilePhoto,
+    } = req.body;
 
     if (password !== confirmPassword) {
       return res.status(400).json({
@@ -36,6 +44,7 @@ export const signup = async (
       password,
       confirmPassword,
       phone,
+      profilePhoto,
     });
 
     // Sending response without password
@@ -46,6 +55,7 @@ export const signup = async (
       role: user.role,
       isVerified: user.isVerified,
       phone: user.phone,
+      profilePhoto: user.profilePhoto,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
     };
@@ -75,7 +85,15 @@ export const signin = async (
       return sendNoDataFoundResponse(res);
     }
     const token = jwt.sign(
-      { id: user._id, role: user.role },
+      {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        isVerified: user.isVerified,
+        phone: user.phone,
+        profilePhoto: user.profilePhoto,
+        role: user.role,
+      },
       config.jwt_access_secret || '',
       { expiresIn: '30d' }
     );
@@ -88,6 +106,7 @@ export const signin = async (
       role: user.role,
       isVerified: user.isVerified,
       phone: user.phone,
+      profilePhoto: user.profilePhoto,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
     };
@@ -210,6 +229,7 @@ export const updateProfile = async (
       email: updatedUser.email,
       role: updatedUser.role,
       phone: updatedUser.phone,
+      profilePhoto: updatedUser.profilePhoto,
       createdAt: updatedUser.createdAt,
       updatedAt: updatedUser.updatedAt,
     };

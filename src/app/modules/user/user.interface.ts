@@ -8,6 +8,7 @@ export interface TUser extends Document {
   isVerified?: boolean;
   password: string;
   phone?: string;
+  profilePhoto?: string;
   passwordResetToken: string;
   passwordResetExpires: Date;
   isDeleted: boolean;

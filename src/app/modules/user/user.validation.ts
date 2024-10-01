@@ -8,6 +8,7 @@ const userValidationSchema = z.object({
   password: z.string().min(6),
   confirmPassword: z.string().min(6),
   phone: z.string().optional(),
+  profilePhoto: z.string().optional(),
 });
 
 const forgetPasswordSchema = z.object({

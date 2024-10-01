@@ -23,7 +23,7 @@ const mailservice_1 = require("../../utils/mailservice");
 // signup controller
 const signup = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { name, email, role, isVerified, password, confirmPassword, phone } = req.body;
+        const { name, email, role, isVerified, password, confirmPassword, phone, profilePhoto, } = req.body;
         if (password !== confirmPassword) {
             return res.status(400).json({
                 success: false,
@@ -40,6 +40,7 @@ const signup = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
             password,
             confirmPassword,
             phone,
+            profilePhoto,
         });
         // Sending response without password
         const responseUser = {
@@ -49,6 +50,7 @@ const signup = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
             role: user.role,
             isVerified: user.isVerified,
             phone: user.phone,
+            profilePhoto: user.profilePhoto,
             createdAt: user.createdAt,
             updatedAt: user.updatedAt,
         };
@@ -72,7 +74,15 @@ const signin = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
         if (!user || !(yield bcrypt_1.default.compare(password, user.password))) {
             return (0, responseUtils_1.sendNoDataFoundResponse)(res);
         }
-        const token = jsonwebtoken_1.default.sign({ id: user._id, role: user.role }, config_1.default.jwt_access_secret || '', { expiresIn: '30d' });
+        const token = jsonwebtoken_1.default.sign({
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            isVerified: user.isVerified,
+            phone: user.phone,
+            profilePhoto: user.profilePhoto,
+            role: user.role,
+        }, config_1.default.jwt_access_secret || '', { expiresIn: '30d' });
         // Sending response without password
         const responseUser = {
             _id: user._id,
@@ -81,6 +91,7 @@ const signin = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
             role: user.role,
             isVerified: user.isVerified,
             phone: user.phone,
+            profilePhoto: user.profilePhoto,
             createdAt: user.createdAt,
             updatedAt: user.updatedAt,
         };
@@ -174,6 +185,7 @@ const updateProfile = (req, res, next) => __awaiter(void 0, void 0, void 0, func
             email: updatedUser.email,
             role: updatedUser.role,
             phone: updatedUser.phone,
+            profilePhoto: updatedUser.profilePhoto,
             createdAt: updatedUser.createdAt,
             updatedAt: updatedUser.updatedAt,
         };

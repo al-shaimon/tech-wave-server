@@ -8,7 +8,11 @@ const UserSchema = new mongoose_1.Schema({
     role: { type: String, enum: ['user', 'admin'], default: 'user' },
     isVerified: { type: Boolean, default: false },
     password: { type: String, required: true, select: 0 },
-    phone: { type: String },
+    phone: { type: String, default: '' },
+    profilePhoto: {
+        type: String,
+        default: 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png',
+    },
     passwordResetToken: String,
     passwordResetExpires: Date,
     isDeleted: { type: Boolean, default: false },

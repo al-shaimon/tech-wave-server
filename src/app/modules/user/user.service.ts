@@ -11,6 +11,7 @@ const signUp = async (userData: {
   password: string;
   confirmPassword: string;
   phone: string;
+  profilePhoto?: string;
 }) => {
   // Check if passwords match
   if (userData.password !== userData.confirmPassword) {
@@ -42,7 +43,7 @@ const findUserByEmail = async (email: string) => {
 const setResetToken = async (
   userId: string,
   resetToken: string,
-  resetExpires: number,
+  resetExpires: number
 ) => {
   return await User.findByIdAndUpdate(userId, {
     passwordResetToken: resetToken,
@@ -66,14 +67,14 @@ const updatePassword = async (userId: string, newPassword: string) => {
 
 const updateProfile = async (
   userId: string,
-  updateData: { name?: string; phone?: string },
+  updateData: { name?: string; phone?: string; profilePhoto?: string }
 ) => {
   return await User.findByIdAndUpdate(
     userId,
     {
       $set: updateData,
     },
-    { new: true },
+    { new: true }
   );
 };
 
@@ -84,20 +85,20 @@ const updateUserByAdmin = async (
     phone?: string;
     role?: string;
     isDeleted?: boolean;
-  },
+  }
 ) => {
   return await User.findByIdAndUpdate(
     userId,
     {
       $set: updateData,
     },
-    { new: true },
+    { new: true }
   );
 };
 
 const getAllUsers = async () => {
   return await User.find().select(
-    '-password -passwordResetToken -passwordResetExpires',
+    '-password -passwordResetToken -passwordResetExpires'
   );
 };
 
