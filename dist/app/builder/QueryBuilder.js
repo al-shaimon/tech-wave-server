@@ -8,17 +8,14 @@ class QueryBuilder {
     }
     search(searchableFields) {
         var _a;
-        let searchTerm = '';
-        if ((_a = this.query) === null || _a === void 0 ? void 0 : _a.searchTerm) {
-            searchTerm = this.query.searchTerm;
+        const searchTerm = (_a = this.query) === null || _a === void 0 ? void 0 : _a.searchTerm;
+        if (searchTerm) {
+            this.modelQuery = this.modelQuery.find({
+                $or: searchableFields.map((field) => ({
+                    [field]: { $regex: searchTerm, $options: 'i' },
+                })),
+            });
         }
-        // {title: {$regex: searchTerm}}
-        // {genre: {$regex: searchTerm}}
-        this.modelQuery = this.modelQuery.find({
-            $or: searchableFields.map((field) => ({
-                [field]: new RegExp(searchTerm, 'i'),
-            })),
-        });
         return this;
     }
     paginate() {

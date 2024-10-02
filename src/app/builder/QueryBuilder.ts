@@ -10,21 +10,14 @@ export class QueryBuilder<T> {
     this.modelQuery = modelQuery;
   }
   search(searchableFields: string[]) {
-    let searchTerm = '';
-
-    if (this.query?.searchTerm) {
-      searchTerm = this.query.searchTerm as string;
+    const searchTerm = this.query?.searchTerm as string;
+    if (searchTerm) {
+      this.modelQuery = this.modelQuery.find({
+        $or: searchableFields.map((field) => ({
+          [field]: { $regex: searchTerm, $options: 'i' },
+        })),
+      });
     }
-    // {title: {$regex: searchTerm}}
-    // {genre: {$regex: searchTerm}}
-    this.modelQuery = this.modelQuery.find({
-      $or: searchableFields.map(
-        (field) =>
-          ({
-            [field]: new RegExp(searchTerm, 'i'),
-          } as FilterQuery<T>)
-      ),
-    });
     return this;
   }
   paginate() {
