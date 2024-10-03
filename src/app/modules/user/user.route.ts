@@ -10,25 +10,25 @@ const router = express.Router();
 router.post(
   '/signup',
   validateRequest(AuthValidations.userValidationSchema),
-  AuthControllers.signup,
+  AuthControllers.signup
 );
 router.post('/signin', AuthControllers.signin);
 router.post(
   '/forget-password',
   validateRequest(AuthValidations.forgetPasswordSchema),
-  AuthControllers.forgetPassword,
+  AuthControllers.forgetPassword
 );
 router.post(
   '/reset-password/:token',
   validateRequest(AuthValidations.resetPasswordSchema),
-  AuthControllers.resetPassword,
+  AuthControllers.resetPassword
 );
 
 router.post(
   '/update-profile',
   authMiddleware,
   validateRequest(AuthValidations.updateProfileSchema),
-  AuthControllers.updateProfile,
+  AuthControllers.updateProfile
 );
 
 router.put(
@@ -36,14 +36,16 @@ router.put(
   authMiddleware,
   adminMiddleware,
   validateRequest(AuthValidations.updateUserAsAdminSchema),
-  AuthControllers.updateUserAsAdmin,
+  AuthControllers.updateUserAsAdmin
 );
 
 router.get(
   '/admin/users',
   authMiddleware,
   adminMiddleware,
-  AuthControllers.getAllUsers,
+  AuthControllers.getAllUsers
 );
+
+router.get('/:id', AuthControllers.getSingleUser);
 
 export const AuthRoutes = router;

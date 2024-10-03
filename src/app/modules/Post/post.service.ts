@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { QueryBuilder } from '../../builder/QueryBuilder';
+import { User } from '../User/user.model';
 import { PostsSearchableFields } from './post.constant';
 import { TPost } from './post.interface';
 import { Post } from './post.model';
@@ -11,6 +12,11 @@ import {
 
 const createPostIntoDB = async (payload: TPost) => {
   const result = await Post.create(payload);
+
+  // Add the post to the user's posts array
+  await User.findByIdAndUpdate(payload.user, {
+    $push: { posts: result._id },
+  });
 
   return result;
 };

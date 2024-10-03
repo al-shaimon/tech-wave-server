@@ -16,5 +16,6 @@ const UserSchema = new mongoose_1.Schema({
     passwordResetToken: String,
     passwordResetExpires: Date,
     isDeleted: { type: Boolean, default: false },
+    posts: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'Post' }],
 }, { timestamps: true });
 exports.User = (0, mongoose_1.model)('User', UserSchema);

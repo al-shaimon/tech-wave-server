@@ -67,7 +67,12 @@ const updatePassword = async (userId: string, newPassword: string) => {
 
 const updateProfile = async (
   userId: string,
-  updateData: { name?: string; phone?: string; profilePhoto?: string }
+  updateData: {
+    name?: string;
+    phone?: string;
+    profilePhoto?: string;
+    isVerified?: boolean;
+  }
 ) => {
   return await User.findByIdAndUpdate(
     userId,
@@ -102,6 +107,15 @@ const getAllUsers = async () => {
   );
 };
 
+const getSingleUserFromDB = async (id: string) => {
+  const user = await User.findById(id).populate({
+    path: 'posts',
+    select: '-__v',
+  });
+
+  return user;
+};
+
 export const AuthServices = {
   signUp,
   signIn,
@@ -112,4 +126,5 @@ export const AuthServices = {
   updateProfile,
   updateUserByAdmin,
   getAllUsers,
+  getSingleUserFromDB,
 };

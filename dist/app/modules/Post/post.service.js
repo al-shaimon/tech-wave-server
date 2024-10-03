@@ -12,11 +12,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PostServices = void 0;
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const QueryBuilder_1 = require("../../builder/QueryBuilder");
+const user_model_1 = require("../User/user.model");
 const post_constant_1 = require("./post.constant");
 const post_model_1 = require("./post.model");
 const post_utils_1 = require("./post.utils");
 const createPostIntoDB = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield post_model_1.Post.create(payload);
+    // Add the post to the user's posts array
+    yield user_model_1.User.findByIdAndUpdate(payload.user, {
+        $push: { posts: result._id },
+    });
     return result;
 });
 const getAllPostsFromDB = (query) => __awaiter(void 0, void 0, void 0, function* () {

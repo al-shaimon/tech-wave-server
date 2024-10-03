@@ -23,6 +23,8 @@ const resetPasswordSchema = z.object({
 const updateProfileSchema = z.object({
   name: z.string().optional(),
   phone: z.string().optional(),
+  profilePhoto: z.string().optional(),
+  isVerified: z.boolean().optional(),
 });
 
 const updateUserAsAdminSchema = z.object({

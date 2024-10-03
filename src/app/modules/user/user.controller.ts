@@ -7,6 +7,9 @@ import config from '../../config';
 import { sendNoDataFoundResponse } from '../../utils/responseUtils';
 import { AuthServices } from './user.service';
 import { sendPasswordResetEmail } from '../../utils/mailservice';
+import catchAsync from '../../utils/catchAsync';
+import sendResponse from '../../utils/sendResponse';
+import httpStatus from 'http-status';
 
 // signup controller
 
@@ -211,11 +214,13 @@ export const updateProfile = async (
 ) => {
   try {
     const userId = req.user.id;
-    const { name, phone } = req.body;
+    const { name, phone, profilePhoto, isVerified } = req.body;
 
     const updatedUser = await AuthServices.updateProfile(userId, {
       name,
       phone,
+      isVerified,
+      profilePhoto,
     });
 
     if (!updatedUser) {
@@ -229,6 +234,7 @@ export const updateProfile = async (
       email: updatedUser.email,
       role: updatedUser.role,
       phone: updatedUser.phone,
+      isVerified: updatedUser.isVerified,
       profilePhoto: updatedUser.profilePhoto,
       createdAt: updatedUser.createdAt,
       updatedAt: updatedUser.updatedAt,
@@ -295,6 +301,16 @@ export const getAllUsers = async (
   }
 };
 
+export const getSingleUser = catchAsync(async (req, res) => {
+  const user = await AuthServices.getSingleUserFromDB(req.params.id);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'User Retrieved Successfully',
+    data: user,
+  });
+});
 export const AuthControllers = {
   signup,
   signin,
@@ -303,4 +319,5 @@ export const AuthControllers = {
   updateProfile,
   updateUserAsAdmin,
   getAllUsers,
+  getSingleUser,
 };

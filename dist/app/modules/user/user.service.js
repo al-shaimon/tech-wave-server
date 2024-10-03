@@ -65,6 +65,13 @@ const updateUserByAdmin = (userId, updateData) => __awaiter(void 0, void 0, void
 const getAllUsers = () => __awaiter(void 0, void 0, void 0, function* () {
     return yield user_model_1.User.find().select('-password -passwordResetToken -passwordResetExpires');
 });
+const getSingleUserFromDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield user_model_1.User.findById(id).populate({
+        path: 'posts',
+        select: '-__v',
+    });
+    return user;
+});
 exports.AuthServices = {
     signUp,
     signIn,
@@ -75,4 +82,5 @@ exports.AuthServices = {
     updateProfile,
     updateUserByAdmin,
     getAllUsers,
+    getSingleUserFromDB,
 };

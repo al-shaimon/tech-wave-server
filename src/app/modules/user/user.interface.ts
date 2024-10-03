@@ -1,4 +1,4 @@
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
 import { USER_ROLE } from './user.constant';
 
 export interface TUser extends Document {
@@ -12,6 +12,7 @@ export interface TUser extends Document {
   passwordResetToken: string;
   passwordResetExpires: Date;
   isDeleted: boolean;
+  posts: Types.ObjectId[];
   createdAt?: Date;
   updatedAt?: Date;
 }

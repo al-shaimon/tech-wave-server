@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AuthControllers = exports.getAllUsers = exports.updateUserAsAdmin = exports.updateProfile = exports.resetPassword = exports.forgetPassword = exports.signin = exports.signup = void 0;
+exports.AuthControllers = exports.getSingleUser = exports.getAllUsers = exports.updateUserAsAdmin = exports.updateProfile = exports.resetPassword = exports.forgetPassword = exports.signin = exports.signup = void 0;
 const crypto_1 = __importDefault(require("crypto"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
@@ -20,6 +20,9 @@ const config_1 = __importDefault(require("../../config"));
 const responseUtils_1 = require("../../utils/responseUtils");
 const user_service_1 = require("./user.service");
 const mailservice_1 = require("../../utils/mailservice");
+const catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
+const sendResponse_1 = __importDefault(require("../../utils/sendResponse"));
+const http_status_1 = __importDefault(require("http-status"));
 // signup controller
 const signup = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -170,10 +173,12 @@ exports.resetPassword = resetPassword;
 const updateProfile = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const userId = req.user.id;
-        const { name, phone } = req.body;
+        const { name, phone, profilePhoto, isVerified } = req.body;
         const updatedUser = yield user_service_1.AuthServices.updateProfile(userId, {
             name,
             phone,
+            isVerified,
+            profilePhoto,
         });
         if (!updatedUser) {
             return (0, responseUtils_1.sendNoDataFoundResponse)(res);
@@ -185,6 +190,7 @@ const updateProfile = (req, res, next) => __awaiter(void 0, void 0, void 0, func
             email: updatedUser.email,
             role: updatedUser.role,
             phone: updatedUser.phone,
+            isVerified: updatedUser.isVerified,
             profilePhoto: updatedUser.profilePhoto,
             createdAt: updatedUser.createdAt,
             updatedAt: updatedUser.updatedAt,
@@ -241,6 +247,15 @@ const getAllUsers = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
     }
 });
 exports.getAllUsers = getAllUsers;
+exports.getSingleUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield user_service_1.AuthServices.getSingleUserFromDB(req.params.id);
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        statusCode: http_status_1.default.OK,
+        message: 'User Retrieved Successfully',
+        data: user,
+    });
+}));
 exports.AuthControllers = {
     signup: exports.signup,
     signin: exports.signin,
@@ -249,4 +264,5 @@ exports.AuthControllers = {
     updateProfile: exports.updateProfile,
     updateUserAsAdmin: exports.updateUserAsAdmin,
     getAllUsers: exports.getAllUsers,
+    getSingleUser: exports.getSingleUser,
 };
