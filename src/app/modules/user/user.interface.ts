@@ -8,6 +8,8 @@ export interface TUser extends Document {
   isVerified?: boolean;
   password: string;
   phone?: string;
+  followers: Types.ObjectId[];
+  following: Types.ObjectId[];
   profilePhoto?: string;
   passwordResetToken: string;
   passwordResetExpires: Date;

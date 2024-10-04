@@ -248,12 +248,46 @@ const getAllUsers = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
 });
 exports.getAllUsers = getAllUsers;
 exports.getSingleUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield user_service_1.AuthServices.getSingleUserFromDB(req.params.id);
+    const currentUserId = req.user ? req.user.id : undefined;
+    const user = yield user_service_1.AuthServices.getSingleUserFromDB(req.params.id, currentUserId);
     (0, sendResponse_1.default)(res, {
         success: true,
         statusCode: http_status_1.default.OK,
         message: 'User Retrieved Successfully',
         data: user,
+    });
+}));
+const followUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userId } = req.params;
+    const followerId = req.user.id;
+    const result = yield user_service_1.AuthServices.followUser(userId, followerId);
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        statusCode: http_status_1.default.OK,
+        message: 'User followed successfully',
+        data: result,
+    });
+}));
+const unfollowUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userId } = req.params;
+    const followerId = req.user.id;
+    const result = yield user_service_1.AuthServices.unfollowUser(userId, followerId);
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        statusCode: http_status_1.default.OK,
+        message: 'User unfollowed successfully',
+        data: result,
+    });
+}));
+const getFollowersAndFollowing = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = req.params.userId || req.user.id;
+    const currentUserId = req.user.id;
+    const result = yield user_service_1.AuthServices.getFollowersAndFollowing(userId, currentUserId);
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        statusCode: http_status_1.default.OK,
+        message: 'Followers and following retrieved successfully',
+        data: result,
     });
 }));
 exports.AuthControllers = {
@@ -265,4 +299,7 @@ exports.AuthControllers = {
     updateUserAsAdmin: exports.updateUserAsAdmin,
     getAllUsers: exports.getAllUsers,
     getSingleUser: exports.getSingleUser,
+    followUser,
+    unfollowUser,
+    getFollowersAndFollowing,
 };

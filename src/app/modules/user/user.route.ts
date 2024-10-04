@@ -4,6 +4,7 @@ import validateRequest from '../../middleWares/validateRequest';
 import { AuthValidations } from './user.validation';
 import authMiddleware from './authMiddleware';
 import { adminMiddleware } from './adminMiddleware';
+import optionalAuthMiddleware from './optionalAuthMiddleware';
 
 const router = express.Router();
 
@@ -46,6 +47,10 @@ router.get(
   AuthControllers.getAllUsers
 );
 
-router.get('/:id', AuthControllers.getSingleUser);
+router.post('/follow/:userId', authMiddleware, AuthControllers.followUser);
+router.post('/unfollow/:userId', authMiddleware, AuthControllers.unfollowUser);
+router.get('/followers-following/:userId?', authMiddleware, AuthControllers.getFollowersAndFollowing);
+
+router.get('/:id', optionalAuthMiddleware, AuthControllers.getSingleUser);
 
 export const AuthRoutes = router;

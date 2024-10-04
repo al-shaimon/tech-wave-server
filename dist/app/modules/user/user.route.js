@@ -10,6 +10,7 @@ const validateRequest_1 = __importDefault(require("../../middleWares/validateReq
 const user_validation_1 = require("./user.validation");
 const authMiddleware_1 = __importDefault(require("./authMiddleware"));
 const adminMiddleware_1 = require("./adminMiddleware");
+const optionalAuthMiddleware_1 = __importDefault(require("./optionalAuthMiddleware"));
 const router = express_1.default.Router();
 router.post('/signup', (0, validateRequest_1.default)(user_validation_1.AuthValidations.userValidationSchema), user_controller_1.AuthControllers.signup);
 router.post('/signin', user_controller_1.AuthControllers.signin);
@@ -18,5 +19,8 @@ router.post('/reset-password/:token', (0, validateRequest_1.default)(user_valida
 router.post('/update-profile', authMiddleware_1.default, (0, validateRequest_1.default)(user_validation_1.AuthValidations.updateProfileSchema), user_controller_1.AuthControllers.updateProfile);
 router.put('/admin/users/:userId', authMiddleware_1.default, adminMiddleware_1.adminMiddleware, (0, validateRequest_1.default)(user_validation_1.AuthValidations.updateUserAsAdminSchema), user_controller_1.AuthControllers.updateUserAsAdmin);
 router.get('/admin/users', authMiddleware_1.default, adminMiddleware_1.adminMiddleware, user_controller_1.AuthControllers.getAllUsers);
-router.get('/:id', user_controller_1.AuthControllers.getSingleUser);
+router.post('/follow/:userId', authMiddleware_1.default, user_controller_1.AuthControllers.followUser);
+router.post('/unfollow/:userId', authMiddleware_1.default, user_controller_1.AuthControllers.unfollowUser);
+router.get('/followers-following/:userId?', authMiddleware_1.default, user_controller_1.AuthControllers.getFollowersAndFollowing);
+router.get('/:id', optionalAuthMiddleware_1.default, user_controller_1.AuthControllers.getSingleUser);
 exports.AuthRoutes = router;

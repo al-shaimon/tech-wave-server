@@ -18,12 +18,12 @@ router.get('/', PostControllers.getAllPosts);
 
 router.get('/:id', PostControllers.getPost);
 
-// router.put(
-//   '/:id',
-//   auth('user'),
-//   validateRequest(ItemValidation.updateItemValidationSchema),
-//   ItemControllers.updateItem
-// );
+router.put(
+  '/:id',
+  // auth('user'),
+  validateRequest(PostValidation.updatePostValidationSchema),
+  PostControllers.updatePost
+);
 
 // router.delete('/:id', auth('user'), ItemControllers.deleteItem);
 

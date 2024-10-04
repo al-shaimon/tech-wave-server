@@ -53,15 +53,11 @@ const getPostFromDB = async (postId: string) => {
   return result;
 };
 
-// const updateItemInDB = async (itemId: string, payload: TItem) => {
-//   const result = await Item.findByIdAndUpdate(itemId, payload, { new: true });
-//   if (result) {
-//     await addDocumentToIndex(result, 'items');
-//   } else {
-//     throw new Error(`Item with ID ${itemId} not found.`);
-//   }
-//   return result;
-// };
+const updatePostIntoDB = async (postId: string, payload: TPost) => {
+  const result = await Post.findByIdAndUpdate(postId, payload, { new: true });
+
+  return result;
+};
 
 // const deleteItemFromDB = async (itemId: string) => {
 //   const result = await Item.findByIdAndDelete(itemId);
@@ -77,6 +73,6 @@ export const PostServices = {
   createPostIntoDB,
   getAllPostsFromDB,
   getPostFromDB,
-  // updateItemInDB,
+  updatePostIntoDB,
   // deleteItemFromDB,
 };

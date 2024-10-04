@@ -48,15 +48,10 @@ const getPostFromDB = (postId) => __awaiter(void 0, void 0, void 0, function* ()
         .populate('category');
     return result;
 });
-// const updateItemInDB = async (itemId: string, payload: TItem) => {
-//   const result = await Item.findByIdAndUpdate(itemId, payload, { new: true });
-//   if (result) {
-//     await addDocumentToIndex(result, 'items');
-//   } else {
-//     throw new Error(`Item with ID ${itemId} not found.`);
-//   }
-//   return result;
-// };
+const updatePostIntoDB = (postId, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield post_model_1.Post.findByIdAndUpdate(postId, payload, { new: true });
+    return result;
+});
 // const deleteItemFromDB = async (itemId: string) => {
 //   const result = await Item.findByIdAndDelete(itemId);
 //   const deletedItemId = result?._id;
@@ -69,6 +64,6 @@ exports.PostServices = {
     createPostIntoDB,
     getAllPostsFromDB,
     getPostFromDB,
-    // updateItemInDB,
+    updatePostIntoDB,
     // deleteItemFromDB,
 };

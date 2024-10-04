@@ -9,6 +9,8 @@ const UserSchema = new mongoose_1.Schema({
     isVerified: { type: Boolean, default: false },
     password: { type: String, required: true, select: 0 },
     phone: { type: String, default: '' },
+    followers: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'User' }],
+    following: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'User' }],
     profilePhoto: {
         type: String,
         default: 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png',

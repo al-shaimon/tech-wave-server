@@ -9,6 +9,8 @@ const UserSchema: Schema = new Schema<TUser>(
     isVerified: { type: Boolean, default: false },
     password: { type: String, required: true, select: 0 },
     phone: { type: String, default: '' },
+    followers: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+    following: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     profilePhoto: {
       type: String,
       default:

@@ -13,6 +13,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthServices = void 0;
+/* eslint-disable @typescript-eslint/no-explicit-any */
+const mongoose_1 = __importDefault(require("mongoose"));
 const user_model_1 = require("./user.model");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 // signup service
@@ -65,12 +67,72 @@ const updateUserByAdmin = (userId, updateData) => __awaiter(void 0, void 0, void
 const getAllUsers = () => __awaiter(void 0, void 0, void 0, function* () {
     return yield user_model_1.User.find().select('-password -passwordResetToken -passwordResetExpires');
 });
-const getSingleUserFromDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield user_model_1.User.findById(id).populate({
+const getSingleUserFromDB = (id, currentUserId) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b;
+    const user = yield user_model_1.User.findById(id)
+        .populate({
         path: 'posts',
         select: '-__v',
-    });
-    return user;
+    })
+        .populate('followers', 'name email profilePhoto isVerified')
+        .populate('following', 'name email profilePhoto isVerified');
+    if (!user) {
+        throw new Error('User not found');
+    }
+    const userObject = user.toObject();
+    userObject.followersCount = ((_a = user.followers) === null || _a === void 0 ? void 0 : _a.length) || 0;
+    userObject.followingCount = ((_b = user.following) === null || _b === void 0 ? void 0 : _b.length) || 0;
+    userObject.isFollowing = currentUserId
+        ? user.followers.some((f) => f._id.toString() === currentUserId)
+        : false;
+    return userObject;
+});
+const getFollowersAndFollowing = (userId, currentUserId) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield user_model_1.User.findById(userId)
+        .populate('followers', 'name email profilePhoto isVerified')
+        .populate('following', 'name email profilePhoto isVerified');
+    if (!user) {
+        throw new Error('User not found');
+    }
+    const followers = user.followers.map((follower) => (Object.assign(Object.assign({}, follower.toObject()), { isFollowing: user.following.some((f) => f._id.toString() === follower._id.toString()) })));
+    const following = user.following.map((followedUser) => (Object.assign(Object.assign({}, followedUser.toObject()), { isFollowing: true })));
+    return {
+        followers,
+        following,
+        followersCount: followers.length,
+        followingCount: following.length,
+        isFollowing: user.followers.some((f) => f._id.toString() === currentUserId),
+    };
+});
+const followUser = (userId, followerId) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield user_model_1.User.findById(userId);
+    const follower = yield user_model_1.User.findById(followerId);
+    if (!user || !follower) {
+        throw new Error('User not found');
+    }
+    if (user.followers.includes(new mongoose_1.default.Types.ObjectId(followerId))) {
+        throw new Error('Already following this user');
+    }
+    user.followers.push(new mongoose_1.default.Types.ObjectId(followerId));
+    follower.following.push(new mongoose_1.default.Types.ObjectId(userId));
+    yield user.save();
+    yield follower.save();
+    return { message: 'Successfully followed user' };
+});
+const unfollowUser = (userId, followerId) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield user_model_1.User.findById(userId);
+    const follower = yield user_model_1.User.findById(followerId);
+    if (!user || !follower) {
+        throw new Error('User not found');
+    }
+    if (!user.followers.includes(new mongoose_1.default.Types.ObjectId(followerId))) {
+        throw new Error('Not following this user');
+    }
+    user.followers = user.followers.filter(id => id.toString() !== followerId);
+    follower.following = follower.following.filter(id => id.toString() !== userId);
+    yield user.save();
+    yield follower.save();
+    return { message: 'Successfully unfollowed user' };
 });
 exports.AuthServices = {
     signUp,
@@ -83,4 +145,7 @@ exports.AuthServices = {
     updateUserByAdmin,
     getAllUsers,
     getSingleUserFromDB,
+    getFollowersAndFollowing,
+    followUser,
+    unfollowUser,
 };

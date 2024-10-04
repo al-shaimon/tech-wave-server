@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import mongoose from 'mongoose';
 import { User } from './user.model';
 import bcrypt from 'bcrypt';
 
@@ -107,13 +109,97 @@ const getAllUsers = async () => {
   );
 };
 
-const getSingleUserFromDB = async (id: string) => {
-  const user = await User.findById(id).populate({
-    path: 'posts',
-    select: '-__v',
-  });
+const getSingleUserFromDB = async (id: string, currentUserId?: string) => {
+  const user = await User.findById(id)
+    .populate({
+      path: 'posts',
+      select: '-__v',
+    })
+    .populate('followers', 'name email profilePhoto isVerified')
+    .populate('following', 'name email profilePhoto isVerified');
 
-  return user;
+  if (!user) {
+    throw new Error('User not found');
+  }
+
+  const userObject: any = user.toObject();
+  userObject.followersCount = user.followers?.length || 0;
+  userObject.followingCount = user.following?.length || 0;
+  userObject.isFollowing = currentUserId 
+    ? user.followers.some((f: any) => f._id.toString() === currentUserId)
+    : false;
+
+  return userObject;
+};
+
+const getFollowersAndFollowing = async (userId: string, currentUserId: string) => {
+  const user = await User.findById(userId)
+    .populate('followers', 'name email profilePhoto isVerified')
+    .populate('following', 'name email profilePhoto isVerified');
+
+  if (!user) {
+    throw new Error('User not found');
+  }
+
+  const followers = user.followers.map((follower: any) => ({
+    ...follower.toObject(),
+    isFollowing: user.following.some((f: any) => f._id.toString() === follower._id.toString()),
+  }));
+
+  const following = user.following.map((followedUser: any) => ({
+    ...followedUser.toObject(),
+    isFollowing: true,
+  }));
+
+  return {
+    followers,
+    following,
+    followersCount: followers.length,
+    followingCount: following.length,
+    isFollowing: user.followers.some((f: any) => f._id.toString() === currentUserId),
+  };
+};
+
+const followUser = async (userId: string, followerId: string) => {
+  const user = await User.findById(userId);
+  const follower = await User.findById(followerId);
+
+  if (!user || !follower) {
+    throw new Error('User not found');
+  }
+
+  if (user.followers.includes(new mongoose.Types.ObjectId(followerId))) {
+    throw new Error('Already following this user');
+  }
+
+  user.followers.push(new mongoose.Types.ObjectId(followerId));
+  follower.following.push(new mongoose.Types.ObjectId(userId));
+
+  await user.save();
+  await follower.save();
+
+  return { message: 'Successfully followed user' };
+};
+
+const unfollowUser = async (userId: string, followerId: string) => {
+  const user = await User.findById(userId);
+  const follower = await User.findById(followerId);
+
+  if (!user || !follower) {
+    throw new Error('User not found');
+  }
+
+  if (!user.followers.includes(new mongoose.Types.ObjectId(followerId))) {
+    throw new Error('Not following this user');
+  }
+
+  user.followers = user.followers.filter(id => id.toString() !== followerId);
+  follower.following = follower.following.filter(id => id.toString() !== userId);
+
+  await user.save();
+  await follower.save();
+
+  return { message: 'Successfully unfollowed user' };
 };
 
 export const AuthServices = {
@@ -127,4 +213,7 @@ export const AuthServices = {
   updateUserByAdmin,
   getAllUsers,
   getSingleUserFromDB,
+  getFollowersAndFollowing,
+  followUser,
+  unfollowUser,
 };

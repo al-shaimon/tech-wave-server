@@ -301,8 +301,9 @@ export const getAllUsers = async (
   }
 };
 
-export const getSingleUser = catchAsync(async (req, res) => {
-  const user = await AuthServices.getSingleUserFromDB(req.params.id);
+export const getSingleUser = catchAsync(async (req: Request, res: Response) => {
+  const currentUserId = req.user ? req.user.id : undefined;
+  const user = await AuthServices.getSingleUserFromDB(req.params.id, currentUserId);
 
   sendResponse(res, {
     success: true,
@@ -311,6 +312,49 @@ export const getSingleUser = catchAsync(async (req, res) => {
     data: user,
   });
 });
+
+const followUser = catchAsync(async (req: Request, res: Response) => {
+  const { userId } = req.params;
+  const followerId = req.user.id;
+
+  const result = await AuthServices.followUser(userId, followerId);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'User followed successfully',
+    data: result,
+  });
+});
+
+const unfollowUser = catchAsync(async (req: Request, res: Response) => {
+  const { userId } = req.params;
+  const followerId = req.user.id;
+
+  const result = await AuthServices.unfollowUser(userId, followerId);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'User unfollowed successfully',
+    data: result,
+  });
+});
+
+const getFollowersAndFollowing = catchAsync(async (req: Request, res: Response) => {
+  const userId = req.params.userId || req.user.id;
+  const currentUserId = req.user.id;
+
+  const result = await AuthServices.getFollowersAndFollowing(userId, currentUserId);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'Followers and following retrieved successfully',
+    data: result,
+  });
+});
+
 export const AuthControllers = {
   signup,
   signin,
@@ -320,4 +364,7 @@ export const AuthControllers = {
   updateUserAsAdmin,
   getAllUsers,
   getSingleUser,
+  followUser,
+  unfollowUser,
+  getFollowersAndFollowing,
 };

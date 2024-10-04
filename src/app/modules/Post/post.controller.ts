@@ -40,17 +40,17 @@ const getPost = catchAsync(async (req, res) => {
   });
 });
 
-// const updateItem = catchAsync(async (req, res) => {
-//   const { id } = req.params;
-//   const updatedItem = await ItemServices.updateItemInDB(id, req.body);
+const updatePost = catchAsync(async (req, res) => {
+  const postId = req.params.id;
+  const updatedPost = await PostServices.updatePostIntoDB(postId, req.body);
 
-//   sendResponse(res, {
-//     success: true,
-//     statusCode: httpStatus.OK,
-//     message: 'Item updated successfully',
-//     data: updatedItem,
-//   });
-// });
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'Post updated successfully',
+    data: updatedPost,
+  });
+});
 
 // const deleteItem = catchAsync(async (req, res) => {
 //   const { id } = req.params;
@@ -68,6 +68,6 @@ export const PostControllers = {
   createPost,
   getAllPosts,
   getPost,
-  // updateItem,
+  updatePost,
   // deleteItem,
 };

@@ -13,11 +13,8 @@ const router = express_1.default.Router();
 router.post('/', (0, auth_1.default)('user'), (0, validateRequest_1.default)(post_validation_1.PostValidation.createPostValidationSchema), post_controller_1.PostControllers.createPost);
 router.get('/', post_controller_1.PostControllers.getAllPosts);
 router.get('/:id', post_controller_1.PostControllers.getPost);
-// router.put(
-//   '/:id',
-//   auth('user'),
-//   validateRequest(ItemValidation.updateItemValidationSchema),
-//   ItemControllers.updateItem
-// );
+router.put('/:id', 
+// auth('user'),
+(0, validateRequest_1.default)(post_validation_1.PostValidation.updatePostValidationSchema), post_controller_1.PostControllers.updatePost);
 // router.delete('/:id', auth('user'), ItemControllers.deleteItem);
 exports.PostRoutes = router;

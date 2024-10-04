@@ -11,6 +11,8 @@ const userValidationSchema = zod_1.z.object({
     confirmPassword: zod_1.z.string().min(6),
     phone: zod_1.z.string().optional(),
     profilePhoto: zod_1.z.string().optional(),
+    followers: zod_1.z.array(zod_1.z.string()).optional(),
+    following: zod_1.z.array(zod_1.z.string()).optional(),
 });
 const forgetPasswordSchema = zod_1.z.object({
     email: zod_1.z.string().email(),
