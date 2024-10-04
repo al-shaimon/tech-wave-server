@@ -1,4 +1,4 @@
-import { ObjectId } from 'mongoose';
+import { ObjectId, Types } from 'mongoose';
 
 export type TPost = {
   content: string;
@@ -6,7 +6,8 @@ export type TPost = {
   videos?: string[];
   category: ObjectId;
   votes?: number;
-  comments?: string[];
+  comments: Types.ObjectId[];
+  commentCount: number;
   user: ObjectId;
   createdAt?: Date;
   updatedAt?: Date;

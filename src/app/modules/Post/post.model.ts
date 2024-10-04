@@ -35,6 +35,10 @@ const postSchema = new Schema<TPost>(
       ref: 'User',
       required: true,
     },
+    commentCount: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,

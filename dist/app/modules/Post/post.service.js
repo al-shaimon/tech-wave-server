@@ -34,7 +34,7 @@ const getAllPostsFromDB = (query) => __awaiter(void 0, void 0, void 0, function*
     else {
         query = Object.assign(Object.assign({}, query), (yield (0, post_utils_1.SearchItemByCategoryQueryMaker)(query)));
     }
-    const itemQuery = new QueryBuilder_1.QueryBuilder(post_model_1.Post.find().populate('user').populate('category'), query)
+    const itemQuery = new QueryBuilder_1.QueryBuilder(post_model_1.Post.find().populate('user').populate('category').populate('comments'), query)
         .filter()
         .search(post_constant_1.PostsSearchableFields)
         .sort()

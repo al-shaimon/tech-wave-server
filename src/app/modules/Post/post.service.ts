@@ -33,7 +33,7 @@ const getAllPostsFromDB = async (query: Record<string, unknown>) => {
   }
 
   const itemQuery = new QueryBuilder(
-    Post.find().populate('user').populate('category'),
+    Post.find().populate('user').populate('category').populate('comments'),
     query
   )
     .filter()

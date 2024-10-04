@@ -44,6 +44,10 @@ const postSchema = new mongoose_1.Schema({
         ref: 'User',
         required: true,
     },
+    commentCount: {
+        type: Number,
+        default: 0,
+    },
 }, {
     timestamps: true,
     virtuals: true,
