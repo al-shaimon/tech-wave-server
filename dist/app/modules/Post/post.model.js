@@ -48,6 +48,10 @@ const postSchema = new mongoose_1.Schema({
         type: Number,
         default: 0,
     },
+    isPaid: {
+        type: Boolean,
+        default: false,
+    },
 }, {
     timestamps: true,
     virtuals: true,

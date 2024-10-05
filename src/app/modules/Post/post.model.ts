@@ -39,6 +39,10 @@ const postSchema = new Schema<TPost>(
       type: Number,
       default: 0,
     },
+    isPaid: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

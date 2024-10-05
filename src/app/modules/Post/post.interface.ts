@@ -11,4 +11,5 @@ export type TPost = {
   user: ObjectId;
   createdAt?: Date;
   updatedAt?: Date;
+  isPaid: boolean;
 };

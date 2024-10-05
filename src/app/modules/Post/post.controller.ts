@@ -5,13 +5,15 @@ import sendResponse from '../../utils/sendResponse';
 import { PostServices } from './post.service';
 
 const createPost = catchAsync(async (req, res) => {
-  console.log(req.headers);
+  const postData = req.body;
+  postData.user = req.user.id; // Assuming you have user information in the request
+  postData.isPaid = postData.isPaid || false; // Set default to false if not provided
 
-  const post = await PostServices.createPostIntoDB(req.body);
+  const post = await PostServices.createPostIntoDB(postData);
 
   sendResponse(res, {
     success: true,
-    statusCode: httpStatus.OK,
+    statusCode: httpStatus.CREATED,
     message: 'Post created successfully',
     data: post,
   });

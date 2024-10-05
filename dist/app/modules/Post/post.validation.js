@@ -11,8 +11,6 @@ const createPostValidationSchema = zod_1.z.object({
         required_error: 'Post content is required',
     }),
     images: zod_1.z.array(zod_1.z.string().url()).optional(),
-    // images: z.string().optional(),
-    // videos: z.string().optional(),
     videos: zod_1.z.array(zod_1.z.string().url()).optional(),
     votes: zod_1.z.number().optional(),
     comments: zod_1.z.array(zod_1.z.string()).optional(),
@@ -30,12 +28,11 @@ const createPostValidationSchema = zod_1.z.object({
         .refine((val) => {
         return mongoose_1.default.Types.ObjectId.isValid(val);
     }),
+    isPaid: zod_1.z.boolean().optional().default(false),
 });
 const updatePostValidationSchema = zod_1.z.object({
     content: zod_1.z.string().optional(),
     images: zod_1.z.array(zod_1.z.string().url()).optional(),
-    // images: z.string().optional(),
-    // videos: z.string().optional(),
     videos: zod_1.z.array(zod_1.z.string().url()).optional(),
     votes: zod_1.z.number().optional(),
     comments: zod_1.z.array(zod_1.z.string()).optional(),
@@ -51,6 +48,7 @@ const updatePostValidationSchema = zod_1.z.object({
         return mongoose_1.default.Types.ObjectId.isValid(val);
     })
         .optional(),
+    isPaid: zod_1.z.boolean().optional(),
 });
 exports.PostValidation = {
     createPostValidationSchema,

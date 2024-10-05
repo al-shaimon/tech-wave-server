@@ -19,11 +19,13 @@ const catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
 const sendResponse_1 = __importDefault(require("../../utils/sendResponse"));
 const post_service_1 = require("./post.service");
 const createPost = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(req.headers);
-    const post = yield post_service_1.PostServices.createPostIntoDB(req.body);
+    const postData = req.body;
+    postData.user = req.user.id; // Assuming you have user information in the request
+    postData.isPaid = postData.isPaid || false; // Set default to false if not provided
+    const post = yield post_service_1.PostServices.createPostIntoDB(postData);
     (0, sendResponse_1.default)(res, {
         success: true,
-        statusCode: http_status_1.default.OK,
+        statusCode: http_status_1.default.CREATED,
         message: 'Post created successfully',
         data: post,
     });
