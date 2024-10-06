@@ -57,18 +57,14 @@ const updatePostIntoDB = (postId, payload) => __awaiter(void 0, void 0, void 0, 
     const result = yield post_model_1.Post.findByIdAndUpdate(postId, payload, { new: true });
     return result;
 });
-// const deleteItemFromDB = async (itemId: string) => {
-//   const result = await Item.findByIdAndDelete(itemId);
-//   const deletedItemId = result?._id;
-//   if (deletedItemId) {
-//     await deleteDocumentFromIndex('items', deletedItemId.toString());
-//   }
-//   return result;
-// };
+const deletePostFromDB = (postId) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield post_model_1.Post.findByIdAndDelete(postId);
+    return result;
+});
 exports.PostServices = {
     createPostIntoDB,
     getAllPostsFromDB,
     getPostFromDB,
     updatePostIntoDB,
-    // deleteItemFromDB,
+    deletePostFromDB,
 };

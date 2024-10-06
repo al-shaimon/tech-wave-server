@@ -56,20 +56,16 @@ const updatePostIntoDB = async (postId: string, payload: TPost) => {
   return result;
 };
 
-// const deleteItemFromDB = async (itemId: string) => {
-//   const result = await Item.findByIdAndDelete(itemId);
-//   const deletedItemId = result?._id;
-//   if (deletedItemId) {
-//     await deleteDocumentFromIndex('items', deletedItemId.toString());
-//   }
+const deletePostFromDB = async (postId: string) => {
+  const result = await Post.findByIdAndDelete(postId);
 
-//   return result;
-// };
+  return result;
+};
 
 export const PostServices = {
   createPostIntoDB,
   getAllPostsFromDB,
   getPostFromDB,
   updatePostIntoDB,
-  // deleteItemFromDB,
+  deletePostFromDB,
 };

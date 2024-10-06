@@ -54,22 +54,22 @@ const updatePost = catchAsync(async (req, res) => {
   });
 });
 
-// const deleteItem = catchAsync(async (req, res) => {
-//   const { id } = req.params;
-//   await ItemServices.deleteItemFromDB(id);
+const deletePost = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  await PostServices.deletePostFromDB(id);
 
-//   sendResponse(res, {
-//     success: true,
-//     statusCode: httpStatus.OK,
-//     message: 'Item deleted successfully',
-//     data: null,
-//   });
-// });
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'Post deleted successfully',
+    data: null,
+  });
+});
 
 export const PostControllers = {
   createPost,
   getAllPosts,
   getPost,
   updatePost,
-  // deleteItem,
+  deletePost,
 };

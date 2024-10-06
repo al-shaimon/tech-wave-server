@@ -59,20 +59,20 @@ const updatePost = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, voi
         data: updatedPost,
     });
 }));
-// const deleteItem = catchAsync(async (req, res) => {
-//   const { id } = req.params;
-//   await ItemServices.deleteItemFromDB(id);
-//   sendResponse(res, {
-//     success: true,
-//     statusCode: httpStatus.OK,
-//     message: 'Item deleted successfully',
-//     data: null,
-//   });
-// });
+const deletePost = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    yield post_service_1.PostServices.deletePostFromDB(id);
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        statusCode: http_status_1.default.OK,
+        message: 'Post deleted successfully',
+        data: null,
+    });
+}));
 exports.PostControllers = {
     createPost,
     getAllPosts,
     getPost,
     updatePost,
-    // deleteItem,
+    deletePost,
 };

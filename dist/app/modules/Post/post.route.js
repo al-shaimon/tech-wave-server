@@ -16,5 +16,5 @@ router.get('/:id', post_controller_1.PostControllers.getPost);
 router.put('/:id', 
 // auth('user'),
 (0, validateRequest_1.default)(post_validation_1.PostValidation.updatePostValidationSchema), post_controller_1.PostControllers.updatePost);
-// router.delete('/:id', auth('user'), ItemControllers.deleteItem);
+router.delete('/:id', (0, auth_1.default)('user'), post_controller_1.PostControllers.deletePost);
 exports.PostRoutes = router;
