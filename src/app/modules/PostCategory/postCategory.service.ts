@@ -11,7 +11,7 @@ const createPostCategory = async (postCategory: TPostCategory) => {
 };
 
 const getAllPostCategories = async (query: Record<string, unknown>) => {
-  const posts = new QueryBuilder(PostCategory.find({ isDeleted: false }), query)
+  const posts = new QueryBuilder(PostCategory, { ...query, isDeleted: false })
     .search(postCategorySearchableFields)
     .filter()
     .sort()

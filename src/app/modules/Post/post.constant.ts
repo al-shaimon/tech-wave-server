@@ -1,1 +1,1 @@
-export const PostsSearchableFields = ['content', 'category', 'comments'];
+export const PostsSearchableFields = ['content'];

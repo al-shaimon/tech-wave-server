@@ -4,11 +4,11 @@ import { User } from '../User/user.model';
 import { PostsSearchableFields } from './post.constant';
 import { TPost } from './post.interface';
 import { Post } from './post.model';
-import {
-  SearchItemByCategoryQueryMaker,
-  SearchItemByDateRangeQueryMaker,
-  SearchItemByUserQueryMaker,
-} from './post.utils';
+// import {
+//   SearchItemByCategoryQueryMaker,
+//   SearchItemByDateRangeQueryMaker,
+//   SearchItemByUserQueryMaker,
+// } from './post.utils';
 
 const createPostIntoDB = async (payload: TPost) => {
   const result = await Post.create(payload);
@@ -22,26 +22,23 @@ const createPostIntoDB = async (payload: TPost) => {
 };
 
 const getAllPostsFromDB = async (query: Record<string, unknown>) => {
-  query = (await SearchItemByUserQueryMaker(query)) || query;
-  query = (await SearchItemByDateRangeQueryMaker(query)) || query;
-
-  const categoryQuery = await SearchItemByCategoryQueryMaker(query);
-  if (categoryQuery.category && (categoryQuery.category as any).$in) {
-    query = { ...query, ...categoryQuery };
-  } else {
-    query = { ...query, ...(await SearchItemByCategoryQueryMaker(query)) };
-  }
-
-  const itemQuery = new QueryBuilder(
-    Post.find().populate('user').populate('category').populate('comments'),
-    query
-  )
-    .filter()
+  const postQuery = new QueryBuilder(Post, query)
     .search(PostsSearchableFields)
+    .filter()
     .sort()
+    .paginate()
     .fields();
 
-  const result = await itemQuery.modelQuery;
+  const result = await postQuery.modelQuery
+    .populate('user', 'name email profilePhoto')
+    .populate('category', 'name')
+    .populate({
+      path: 'comments',
+      populate: {
+        path: 'user',
+        select: 'name email profilePhoto',
+      },
+    });
 
   return result;
 };

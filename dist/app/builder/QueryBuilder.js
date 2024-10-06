@@ -1,57 +1,63 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.QueryBuilder = void 0;
+/* eslint-disable prefer-const */
+const mongoose_1 = require("mongoose");
 class QueryBuilder {
-    constructor(modelQuery, query) {
-        this.query = query;
-        this.modelQuery = modelQuery;
+    constructor(model, query) {
+        this.model = model;
+        this.modelQuery = model.find();
+        this.queryObj = query;
     }
     search(searchableFields) {
-        var _a;
-        const searchTerm = (_a = this.query) === null || _a === void 0 ? void 0 : _a.searchTerm;
+        const searchTerm = this.queryObj.searchTerm;
         if (searchTerm) {
-            this.modelQuery = this.modelQuery.find({
-                $or: searchableFields.map((field) => ({
-                    [field]: { $regex: searchTerm, $options: 'i' },
-                })),
-            });
+            const searchConditions = searchableFields.map((field) => {
+                if (this.model.schema.path(field) instanceof mongoose_1.Schema.Types.String) {
+                    return { [field]: { $regex: searchTerm, $options: 'i' } };
+                }
+                return {};
+            }).filter(condition => Object.keys(condition).length > 0);
+            if (searchConditions.length > 0) {
+                this.modelQuery = this.modelQuery.find({ $or: searchConditions });
+            }
+        }
+        return this;
+    }
+    filter() {
+        const queryObject = Object.assign({}, this.queryObj);
+        const excludeFields = ['searchTerm', 'sort', 'page', 'limit', 'fields'];
+        excludeFields.forEach((el) => delete queryObject[el]);
+        let queryStr = JSON.stringify(queryObject);
+        queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
+        this.modelQuery = this.modelQuery.find(JSON.parse(queryStr));
+        return this;
+    }
+    sort() {
+        if (this.queryObj.sort) {
+            const sortBy = this.queryObj.sort.split(',').join(' ');
+            this.modelQuery = this.modelQuery.sort(sortBy);
+        }
+        else {
+            this.modelQuery = this.modelQuery.sort('-createdAt');
         }
         return this;
     }
     paginate() {
-        var _a, _b, _c;
-        let limit = Number(((_a = this.query) === null || _a === void 0 ? void 0 : _a.limit) || 10);
-        let skip = 0;
-        if ((_b = this.query) === null || _b === void 0 ? void 0 : _b.page) {
-            const page = Number(((_c = this.query) === null || _c === void 0 ? void 0 : _c.page) || 1);
-            skip = Number((page - 1) * limit);
-        }
+        const page = Number(this.queryObj.page) || 1;
+        const limit = Number(this.queryObj.limit) || 10;
+        const skip = (page - 1) * limit;
         this.modelQuery = this.modelQuery.skip(skip).limit(limit);
         return this;
     }
-    sort() {
-        var _a;
-        let sortBy = '-createdAt';
-        if ((_a = this.query) === null || _a === void 0 ? void 0 : _a.sortBy) {
-            sortBy = this.query.sortBy;
-        }
-        this.modelQuery = this.modelQuery.sort(sortBy);
-        return this;
-    }
     fields() {
-        var _a, _b;
-        let fields = '';
-        if ((_a = this.query) === null || _a === void 0 ? void 0 : _a.fields) {
-            fields = ((_b = this.query) === null || _b === void 0 ? void 0 : _b.fields).split(',').join(' ');
+        if (this.queryObj.fields) {
+            const fields = this.queryObj.fields.split(',').join(' ');
+            this.modelQuery = this.modelQuery.select(fields);
         }
-        this.modelQuery = this.modelQuery.select(fields);
-        return this;
-    }
-    filter() {
-        const queryObj = Object.assign({}, this.query);
-        const excludeFields = ['searchTerm', 'page', 'limit', 'sortBy', 'fields'];
-        excludeFields.forEach((e) => delete queryObj[e]);
-        this.modelQuery = this.modelQuery.find(queryObj);
+        else {
+            this.modelQuery = this.modelQuery.select('-__v');
+        }
         return this;
     }
 }

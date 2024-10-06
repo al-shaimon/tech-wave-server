@@ -16,7 +16,7 @@ const user_constant_1 = require("../User/user.constant");
 const user_model_1 = require("../User/user.model");
 const SearchItemByUserQueryMaker = (query) => __awaiter(void 0, void 0, void 0, function* () {
     if (query === null || query === void 0 ? void 0 : query.searchTerm) {
-        const userQuery = new QueryBuilder_1.QueryBuilder(user_model_1.User.find(), query).search(user_constant_1.UserSearchableFields);
+        const userQuery = new QueryBuilder_1.QueryBuilder(user_model_1.User, query).search(user_constant_1.UserSearchableFields);
         const users = yield userQuery.modelQuery;
         if (users && users.length > 0) {
             const userIds = users.map((user) => user._id);

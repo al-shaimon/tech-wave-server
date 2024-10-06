@@ -15,7 +15,11 @@ const QueryBuilder_1 = require("../../builder/QueryBuilder");
 const user_model_1 = require("../User/user.model");
 const post_constant_1 = require("./post.constant");
 const post_model_1 = require("./post.model");
-const post_utils_1 = require("./post.utils");
+// import {
+//   SearchItemByCategoryQueryMaker,
+//   SearchItemByDateRangeQueryMaker,
+//   SearchItemByUserQueryMaker,
+// } from './post.utils';
 const createPostIntoDB = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield post_model_1.Post.create(payload);
     // Add the post to the user's posts array
@@ -25,21 +29,22 @@ const createPostIntoDB = (payload) => __awaiter(void 0, void 0, void 0, function
     return result;
 });
 const getAllPostsFromDB = (query) => __awaiter(void 0, void 0, void 0, function* () {
-    query = (yield (0, post_utils_1.SearchItemByUserQueryMaker)(query)) || query;
-    query = (yield (0, post_utils_1.SearchItemByDateRangeQueryMaker)(query)) || query;
-    const categoryQuery = yield (0, post_utils_1.SearchItemByCategoryQueryMaker)(query);
-    if (categoryQuery.category && categoryQuery.category.$in) {
-        query = Object.assign(Object.assign({}, query), categoryQuery);
-    }
-    else {
-        query = Object.assign(Object.assign({}, query), (yield (0, post_utils_1.SearchItemByCategoryQueryMaker)(query)));
-    }
-    const itemQuery = new QueryBuilder_1.QueryBuilder(post_model_1.Post.find().populate('user').populate('category').populate('comments'), query)
-        .filter()
+    const postQuery = new QueryBuilder_1.QueryBuilder(post_model_1.Post, query)
         .search(post_constant_1.PostsSearchableFields)
+        .filter()
         .sort()
+        .paginate()
         .fields();
-    const result = yield itemQuery.modelQuery;
+    const result = yield postQuery.modelQuery
+        .populate('user', 'name email profilePhoto')
+        .populate('category', 'name')
+        .populate({
+        path: 'comments',
+        populate: {
+            path: 'user',
+            select: 'name email profilePhoto',
+        },
+    });
     return result;
 });
 const getPostFromDB = (postId) => __awaiter(void 0, void 0, void 0, function* () {

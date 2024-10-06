@@ -23,7 +23,7 @@ const createPostCategory = (postCategory) => __awaiter(void 0, void 0, void 0, f
     return result;
 });
 const getAllPostCategories = (query) => __awaiter(void 0, void 0, void 0, function* () {
-    const posts = new QueryBuilder_1.QueryBuilder(postCategory_model_1.PostCategory.find({ isDeleted: false }), query)
+    const posts = new QueryBuilder_1.QueryBuilder(postCategory_model_1.PostCategory, Object.assign(Object.assign({}, query), { isDeleted: false }))
         .search(postCategory_constant_1.postCategorySearchableFields)
         .filter()
         .sort()

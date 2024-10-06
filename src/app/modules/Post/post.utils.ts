@@ -7,7 +7,7 @@ export const SearchItemByUserQueryMaker = async (
   query: Record<string, unknown>
 ) => {
   if (query?.searchTerm) {
-    const userQuery = new QueryBuilder(User.find(), query).search(
+    const userQuery = new QueryBuilder(User, query).search(
       UserSearchableFields
     );
 
