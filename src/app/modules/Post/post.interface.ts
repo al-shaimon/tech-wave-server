@@ -12,4 +12,6 @@ export type TPost = {
   createdAt?: Date;
   updatedAt?: Date;
   isPaid: boolean;
+  shareCounts: number;
+  viewCounts: number;
 };

@@ -52,6 +52,14 @@ const postSchema = new mongoose_1.Schema({
         type: Boolean,
         default: false,
     },
+    shareCounts: {
+        type: Number,
+        default: 0,
+    },
+    viewCounts: {
+        type: Number,
+        default: 0,
+    },
 }, {
     timestamps: true,
     virtuals: true,

@@ -43,6 +43,14 @@ const postSchema = new Schema<TPost>(
       type: Boolean,
       default: false,
     },
+    shareCounts: {
+      type: Number,
+      default: 0,
+    },
+    viewCounts: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,

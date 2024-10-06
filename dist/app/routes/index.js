@@ -5,6 +5,7 @@ const user_route_1 = require("../modules/User/user.route");
 const postCategory_route_1 = require("../modules/PostCategory/postCategory.route");
 const post_route_1 = require("../modules/Post/post.route");
 const comment_route_1 = require("../modules/Comment/comment.route");
+const analytics_route_1 = require("../modules/Analytics/analytics.route");
 const router = (0, express_1.Router)();
 const moduleRoutes = [
     {
@@ -22,6 +23,10 @@ const moduleRoutes = [
     {
         path: '/comments',
         route: comment_route_1.CommentRoutes,
+    },
+    {
+        path: '/analytics',
+        route: analytics_route_1.AnalyticsRoutes,
     },
 ];
 moduleRoutes.forEach((route) => router.use(route.path, route.route));
