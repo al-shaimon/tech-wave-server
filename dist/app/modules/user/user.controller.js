@@ -23,6 +23,7 @@ const mailservice_1 = require("../../utils/mailservice");
 const catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
 const sendResponse_1 = __importDefault(require("../../utils/sendResponse"));
 const http_status_1 = __importDefault(require("http-status"));
+const activityLogs_model_1 = require("../ActivityLogs/activityLogs.model");
 // signup controller
 const signup = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -86,6 +87,11 @@ const signin = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
             profilePhoto: user.profilePhoto,
             role: user.role,
         }, config_1.default.jwt_access_secret || '', { expiresIn: '30d' });
+        // Create activity log
+        yield activityLogs_model_1.ActivityLog.create({
+            user: user._id,
+            action: 'User logged in',
+        });
         // Sending response without password
         const responseUser = {
             _id: user._id,

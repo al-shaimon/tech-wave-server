@@ -10,6 +10,7 @@ import { sendPasswordResetEmail } from '../../utils/mailservice';
 import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
 import httpStatus from 'http-status';
+import { ActivityLog } from '../ActivityLogs/activityLogs.model';
 
 // signup controller
 
@@ -100,6 +101,12 @@ export const signin = async (
       config.jwt_access_secret || '',
       { expiresIn: '30d' }
     );
+
+    // Create activity log
+    await ActivityLog.create({
+      user: user._id,
+      action: 'User logged in',
+    });
 
     // Sending response without password
     const responseUser = {
