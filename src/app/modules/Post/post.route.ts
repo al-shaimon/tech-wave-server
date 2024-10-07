@@ -4,13 +4,14 @@ import { PostControllers } from './post.controller';
 import { PostValidation } from './post.validation';
 import auth from '../../middleWares/auth';
 import { adminMiddleware } from '../User/adminMiddleware';
+import authMiddleware from '../User/authMiddleware';
 
 const router = express.Router();
 
 router.post(
   '/',
-  auth('user'),
-
+  // auth('user'),
+  authMiddleware,
   validateRequest(PostValidation.createPostValidationSchema),
   PostControllers.createPost
 );
