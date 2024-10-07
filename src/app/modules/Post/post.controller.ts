@@ -3,6 +3,12 @@ import httpStatus from 'http-status';
 import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
 import { PostServices } from './post.service';
+import { ObjectId } from 'mongoose';
+
+interface User {
+  _id: ObjectId;
+  // other user properties...
+}
 
 const createPost = catchAsync(async (req, res) => {
   const postData = req.body;
@@ -56,6 +62,18 @@ const updatePost = catchAsync(async (req, res) => {
 
 const deletePost = catchAsync(async (req, res) => {
   const { id } = req.params;
+  const userId = req.user.id;
+
+  const post = await PostServices.getPostFromDB(id);
+
+  if (!post) {
+    throw new Error('Post not found');
+  }
+
+  if ((post.user as unknown as User)._id.toString() !== userId) {
+    throw new Error('You are not authorized to delete this post');
+  }
+
   await PostServices.deletePostFromDB(id);
 
   sendResponse(res, {
@@ -66,10 +84,30 @@ const deletePost = catchAsync(async (req, res) => {
   });
 });
 
+const deletePostByAdmin = catchAsync(async (req, res) => {
+  const { id } = req.params;
+
+  const post = await PostServices.getPostFromDB(id);
+
+  if (!post) {
+    throw new Error('Post not found');
+  }
+
+  await PostServices.deletePostFromDB(id);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'Post deleted successfully by admin',
+    data: null,
+  });
+});
+
 export const PostControllers = {
   createPost,
   getAllPosts,
   getPost,
   updatePost,
   deletePost,
+  deletePostByAdmin,
 };

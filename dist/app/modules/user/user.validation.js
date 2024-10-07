@@ -32,6 +32,7 @@ const updateUserAsAdminSchema = zod_1.z.object({
     phone: zod_1.z.string().optional(),
     role: zod_1.z.enum(['user', 'admin']).optional(),
     isDeleted: zod_1.z.boolean().optional(),
+    isBlocked: zod_1.z.boolean().optional(),
 });
 exports.AuthValidations = {
     userValidationSchema,

@@ -61,11 +61,33 @@ const updatePost = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, voi
 }));
 const deletePost = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
+    const userId = req.user.id;
+    const post = yield post_service_1.PostServices.getPostFromDB(id);
+    if (!post) {
+        throw new Error('Post not found');
+    }
+    if (post.user._id.toString() !== userId) {
+        throw new Error('You are not authorized to delete this post');
+    }
     yield post_service_1.PostServices.deletePostFromDB(id);
     (0, sendResponse_1.default)(res, {
         success: true,
         statusCode: http_status_1.default.OK,
         message: 'Post deleted successfully',
+        data: null,
+    });
+}));
+const deletePostByAdmin = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const post = yield post_service_1.PostServices.getPostFromDB(id);
+    if (!post) {
+        throw new Error('Post not found');
+    }
+    yield post_service_1.PostServices.deletePostFromDB(id);
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        statusCode: http_status_1.default.OK,
+        message: 'Post deleted successfully by admin',
         data: null,
     });
 }));
@@ -75,4 +97,5 @@ exports.PostControllers = {
     getPost,
     updatePost,
     deletePost,
+    deletePostByAdmin,
 };

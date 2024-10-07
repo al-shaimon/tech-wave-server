@@ -23,4 +23,10 @@ router.post('/follow/:userId', authMiddleware_1.default, user_controller_1.AuthC
 router.post('/unfollow/:userId', authMiddleware_1.default, user_controller_1.AuthControllers.unfollowUser);
 router.get('/followers-following/:userId?', authMiddleware_1.default, user_controller_1.AuthControllers.getFollowersAndFollowing);
 router.get('/:id', optionalAuthMiddleware_1.default, user_controller_1.AuthControllers.getSingleUser);
+router.delete('/admin/users/:userId', authMiddleware_1.default, adminMiddleware_1.adminMiddleware, user_controller_1.AuthControllers.deleteUser);
+router.put('/admin/users/:userId/block', authMiddleware_1.default, adminMiddleware_1.adminMiddleware, user_controller_1.AuthControllers.blockUser);
+router.put('/admin/users/:userId/unblock', authMiddleware_1.default, adminMiddleware_1.adminMiddleware, user_controller_1.AuthControllers.unblockUser);
+router.put('/admin/users/:userId/make-admin', authMiddleware_1.default, adminMiddleware_1.adminMiddleware, user_controller_1.AuthControllers.makeAdmin);
+router.delete('/admin/users/:userId/delete', authMiddleware_1.default, adminMiddleware_1.adminMiddleware, user_controller_1.AuthControllers.deleteUserByAdmin);
+router.put('/admin/users/:userId/demote', authMiddleware_1.default, adminMiddleware_1.adminMiddleware, user_controller_1.AuthControllers.demoteAdminToUser);
 exports.AuthRoutes = router;

@@ -65,11 +65,11 @@ const updateUserByAdmin = (userId, updateData) => __awaiter(void 0, void 0, void
     }, { new: true });
 });
 const getAllUsers = () => __awaiter(void 0, void 0, void 0, function* () {
-    return yield user_model_1.User.find().select('-password -passwordResetToken -passwordResetExpires');
+    return yield user_model_1.User.find({ isDeleted: { $ne: true } }).select('-password -passwordResetToken -passwordResetExpires');
 });
 const getSingleUserFromDB = (id, currentUserId) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b;
-    const user = yield user_model_1.User.findById(id)
+    const user = yield user_model_1.User.findOne({ _id: id, isDeleted: { $ne: true } })
         .populate({
         path: 'posts',
         select: '-__v',
@@ -148,4 +148,46 @@ exports.AuthServices = {
     getFollowersAndFollowing,
     followUser,
     unfollowUser,
+    deleteUser: (userId) => __awaiter(void 0, void 0, void 0, function* () {
+        const user = yield user_model_1.User.findByIdAndUpdate(userId, { isDeleted: true }, { new: true });
+        if (!user) {
+            throw new Error('User not found');
+        }
+        return { message: 'User deleted successfully', user };
+    }),
+    blockUser: (userId) => __awaiter(void 0, void 0, void 0, function* () {
+        const user = yield user_model_1.User.findByIdAndUpdate(userId, { isBlocked: true }, { new: true });
+        if (!user) {
+            throw new Error('User not found');
+        }
+        return { message: 'User blocked successfully', user };
+    }),
+    unblockUser: (userId) => __awaiter(void 0, void 0, void 0, function* () {
+        const user = yield user_model_1.User.findByIdAndUpdate(userId, { isBlocked: false }, { new: true });
+        if (!user) {
+            throw new Error('User not found');
+        }
+        return { message: 'User unblocked successfully', user };
+    }),
+    makeAdmin: (userId) => __awaiter(void 0, void 0, void 0, function* () {
+        const user = yield user_model_1.User.findByIdAndUpdate(userId, { role: 'admin' }, { new: true });
+        if (!user) {
+            throw new Error('User not found');
+        }
+        return { message: 'User promoted to admin successfully', user };
+    }),
+    deleteUserByAdmin: (userId) => __awaiter(void 0, void 0, void 0, function* () {
+        const user = yield user_model_1.User.findByIdAndDelete(userId);
+        if (!user) {
+            throw new Error('User not found');
+        }
+        return { message: 'User deleted successfully' };
+    }),
+    demoteAdminToUser: (userId) => __awaiter(void 0, void 0, void 0, function* () {
+        const user = yield user_model_1.User.findByIdAndUpdate(userId, { role: 'user' }, { new: true });
+        if (!user) {
+            throw new Error('User not found');
+        }
+        return { message: 'Admin demoted to user successfully', user };
+    }),
 };

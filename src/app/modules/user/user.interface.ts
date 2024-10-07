@@ -14,6 +14,7 @@ export interface TUser extends Document {
   passwordResetToken: string;
   passwordResetExpires: Date;
   isDeleted: boolean;
+  isBlocked: boolean;
   posts: Types.ObjectId[];
   createdAt?: Date;
   updatedAt?: Date;

@@ -355,6 +355,72 @@ const getFollowersAndFollowing = catchAsync(async (req: Request, res: Response) 
   });
 });
 
+export const deleteUser = catchAsync(async (req: Request, res: Response) => {
+  const { userId } = req.params;
+  const result = await AuthServices.deleteUser(userId);
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'User deleted successfully',
+    data: result,
+  });
+});
+
+export const blockUser = catchAsync(async (req: Request, res: Response) => {
+  const { userId } = req.params;
+  const result = await AuthServices.blockUser(userId);
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'User blocked successfully',
+    data: result,
+  });
+});
+
+export const unblockUser = catchAsync(async (req: Request, res: Response) => {
+  const { userId } = req.params;
+  const result = await AuthServices.unblockUser(userId);
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'User unblocked successfully',
+    data: result,
+  });
+});
+
+export const makeAdmin = catchAsync(async (req: Request, res: Response) => {
+  const { userId } = req.params;
+  const result = await AuthServices.makeAdmin(userId);
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'User promoted to admin successfully',
+    data: result,
+  });
+});
+
+const deleteUserByAdmin = catchAsync(async (req: Request, res: Response) => {
+  const { userId } = req.params;
+  const result = await AuthServices.deleteUser(userId);
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'User soft deleted successfully',
+    data: result,
+  });
+});
+
+const demoteAdminToUser = catchAsync(async (req: Request, res: Response) => {
+  const { userId } = req.params;
+  const result = await AuthServices.demoteAdminToUser(userId);
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'Admin demoted to user successfully',
+    data: result,
+  });
+});
+
 export const AuthControllers = {
   signup,
   signin,
@@ -367,4 +433,10 @@ export const AuthControllers = {
   followUser,
   unfollowUser,
   getFollowersAndFollowing,
+  deleteUser,
+  blockUser,
+  unblockUser,
+  makeAdmin,
+  deleteUserByAdmin,
+  demoteAdminToUser,
 };

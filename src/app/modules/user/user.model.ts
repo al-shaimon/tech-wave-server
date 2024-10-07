@@ -19,6 +19,7 @@ const UserSchema: Schema = new Schema<TUser>(
     passwordResetToken: String,
     passwordResetExpires: Date,
     isDeleted: { type: Boolean, default: false },
+    isBlocked: { type: Boolean, default: false },
     posts: [{ type: Schema.Types.ObjectId, ref: 'Post' }],
   },
   { timestamps: true }

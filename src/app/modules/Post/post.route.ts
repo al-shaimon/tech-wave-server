@@ -3,6 +3,7 @@ import validateRequest from '../../middleWares/validateRequest';
 import { PostControllers } from './post.controller';
 import { PostValidation } from './post.validation';
 import auth from '../../middleWares/auth';
+import { adminMiddleware } from '../User/adminMiddleware';
 
 const router = express.Router();
 
@@ -26,5 +27,12 @@ router.put(
 );
 
 router.delete('/:id', auth('user'), PostControllers.deletePost);
+
+router.delete(
+  '/:id/admin',
+  auth('admin'),
+  adminMiddleware,
+  PostControllers.deletePostByAdmin
+);
 
 export const PostRoutes = router;

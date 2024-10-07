@@ -104,13 +104,13 @@ const updateUserByAdmin = async (
 };
 
 const getAllUsers = async () => {
-  return await User.find().select(
+  return await User.find({ isDeleted: { $ne: true } }).select(
     '-password -passwordResetToken -passwordResetExpires'
   );
 };
 
 const getSingleUserFromDB = async (id: string, currentUserId?: string) => {
-  const user = await User.findById(id)
+  const user = await User.findOne({ _id: id, isDeleted: { $ne: true } })
     .populate({
       path: 'posts',
       select: '-__v',
@@ -216,4 +216,46 @@ export const AuthServices = {
   getFollowersAndFollowing,
   followUser,
   unfollowUser,
+  deleteUser: async (userId: string) => {
+    const user = await User.findByIdAndUpdate(userId, { isDeleted: true }, { new: true });
+    if (!user) {
+      throw new Error('User not found');
+    }
+    return { message: 'User deleted successfully', user };
+  },
+  blockUser: async (userId: string) => {
+    const user = await User.findByIdAndUpdate(userId, { isBlocked: true }, { new: true });
+    if (!user) {
+      throw new Error('User not found');
+    }
+    return { message: 'User blocked successfully', user };
+  },
+  unblockUser: async (userId: string) => {
+    const user = await User.findByIdAndUpdate(userId, { isBlocked: false }, { new: true });
+    if (!user) {
+      throw new Error('User not found');
+    }
+    return { message: 'User unblocked successfully', user };
+  },
+  makeAdmin: async (userId: string) => {
+    const user = await User.findByIdAndUpdate(userId, { role: 'admin' }, { new: true });
+    if (!user) {
+      throw new Error('User not found');
+    }
+    return { message: 'User promoted to admin successfully', user };
+  },
+  deleteUserByAdmin: async (userId: string) => {
+    const user = await User.findByIdAndDelete(userId);
+    if (!user) {
+      throw new Error('User not found');
+    }
+    return { message: 'User deleted successfully' };
+  },
+  demoteAdminToUser: async (userId: string) => {
+    const user = await User.findByIdAndUpdate(userId, { role: 'user' }, { new: true });
+    if (!user) {
+      throw new Error('User not found');
+    }
+    return { message: 'Admin demoted to user successfully', user };
+  },
 };

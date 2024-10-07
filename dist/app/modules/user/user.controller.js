@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AuthControllers = exports.getSingleUser = exports.getAllUsers = exports.updateUserAsAdmin = exports.updateProfile = exports.resetPassword = exports.forgetPassword = exports.signin = exports.signup = void 0;
+exports.AuthControllers = exports.makeAdmin = exports.unblockUser = exports.blockUser = exports.deleteUser = exports.getSingleUser = exports.getAllUsers = exports.updateUserAsAdmin = exports.updateProfile = exports.resetPassword = exports.forgetPassword = exports.signin = exports.signup = void 0;
 const crypto_1 = __importDefault(require("crypto"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
@@ -290,6 +290,66 @@ const getFollowersAndFollowing = (0, catchAsync_1.default)((req, res) => __await
         data: result,
     });
 }));
+exports.deleteUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userId } = req.params;
+    const result = yield user_service_1.AuthServices.deleteUser(userId);
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        statusCode: http_status_1.default.OK,
+        message: 'User deleted successfully',
+        data: result,
+    });
+}));
+exports.blockUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userId } = req.params;
+    const result = yield user_service_1.AuthServices.blockUser(userId);
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        statusCode: http_status_1.default.OK,
+        message: 'User blocked successfully',
+        data: result,
+    });
+}));
+exports.unblockUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userId } = req.params;
+    const result = yield user_service_1.AuthServices.unblockUser(userId);
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        statusCode: http_status_1.default.OK,
+        message: 'User unblocked successfully',
+        data: result,
+    });
+}));
+exports.makeAdmin = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userId } = req.params;
+    const result = yield user_service_1.AuthServices.makeAdmin(userId);
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        statusCode: http_status_1.default.OK,
+        message: 'User promoted to admin successfully',
+        data: result,
+    });
+}));
+const deleteUserByAdmin = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userId } = req.params;
+    const result = yield user_service_1.AuthServices.deleteUser(userId);
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        statusCode: http_status_1.default.OK,
+        message: 'User soft deleted successfully',
+        data: result,
+    });
+}));
+const demoteAdminToUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userId } = req.params;
+    const result = yield user_service_1.AuthServices.demoteAdminToUser(userId);
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        statusCode: http_status_1.default.OK,
+        message: 'Admin demoted to user successfully',
+        data: result,
+    });
+}));
 exports.AuthControllers = {
     signup: exports.signup,
     signin: exports.signin,
@@ -302,4 +362,10 @@ exports.AuthControllers = {
     followUser,
     unfollowUser,
     getFollowersAndFollowing,
+    deleteUser: exports.deleteUser,
+    blockUser: exports.blockUser,
+    unblockUser: exports.unblockUser,
+    makeAdmin: exports.makeAdmin,
+    deleteUserByAdmin,
+    demoteAdminToUser,
 };

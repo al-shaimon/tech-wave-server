@@ -9,6 +9,7 @@ const validateRequest_1 = __importDefault(require("../../middleWares/validateReq
 const post_controller_1 = require("./post.controller");
 const post_validation_1 = require("./post.validation");
 const auth_1 = __importDefault(require("../../middleWares/auth"));
+const adminMiddleware_1 = require("../User/adminMiddleware");
 const router = express_1.default.Router();
 router.post('/', (0, auth_1.default)('user'), (0, validateRequest_1.default)(post_validation_1.PostValidation.createPostValidationSchema), post_controller_1.PostControllers.createPost);
 router.get('/', post_controller_1.PostControllers.getAllPosts);
@@ -17,4 +18,5 @@ router.put('/:id',
 // auth('user'),
 (0, validateRequest_1.default)(post_validation_1.PostValidation.updatePostValidationSchema), post_controller_1.PostControllers.updatePost);
 router.delete('/:id', (0, auth_1.default)('user'), post_controller_1.PostControllers.deletePost);
+router.delete('/:id/admin', (0, auth_1.default)('admin'), adminMiddleware_1.adminMiddleware, post_controller_1.PostControllers.deletePostByAdmin);
 exports.PostRoutes = router;
