@@ -344,9 +344,7 @@ const unfollowUser = catchAsync(async (req: Request, res: Response) => {
 const getFollowersAndFollowing = catchAsync(async (req: Request, res: Response) => {
   const userId = req.params.userId || req.user.id;
   const currentUserId = req.user.id;
-
   const result = await AuthServices.getFollowersAndFollowing(userId, currentUserId);
-
   sendResponse(res, {
     success: true,
     statusCode: httpStatus.OK,

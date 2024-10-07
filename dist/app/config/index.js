@@ -26,4 +26,5 @@ exports.default = {
     payment_url: process.env.PAYMENT_URL,
     payment_verify_url: process.env.PAYMENT_VERIFY_URL,
     client_url: process.env.CLIENT_URL,
+    stripe_secret_key: process.env.STRIPE_SECRET_KEY,
 };

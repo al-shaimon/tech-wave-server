@@ -102,6 +102,7 @@ const getFollowersAndFollowing = (userId, currentUserId) => __awaiter(void 0, vo
         followersCount: followers.length,
         followingCount: following.length,
         isFollowing: user.followers.some((f) => f._id.toString() === currentUserId),
+        payments: user.payments,
     };
 });
 const followUser = (userId, followerId) => __awaiter(void 0, void 0, void 0, function* () {
@@ -128,8 +129,8 @@ const unfollowUser = (userId, followerId) => __awaiter(void 0, void 0, void 0, f
     if (!user.followers.includes(new mongoose_1.default.Types.ObjectId(followerId))) {
         throw new Error('Not following this user');
     }
-    user.followers = user.followers.filter(id => id.toString() !== followerId);
-    follower.following = follower.following.filter(id => id.toString() !== userId);
+    user.followers = user.followers.filter((id) => id.toString() !== followerId);
+    follower.following = follower.following.filter((id) => id.toString() !== userId);
     yield user.save();
     yield follower.save();
     return { message: 'Successfully unfollowed user' };

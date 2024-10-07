@@ -10,6 +10,7 @@ export interface TUser extends Document {
   phone?: string;
   followers: Types.ObjectId[];
   following: Types.ObjectId[];
+  payments: Types.ObjectId[];
   profilePhoto?: string;
   passwordResetToken: string;
   passwordResetExpires: Date;

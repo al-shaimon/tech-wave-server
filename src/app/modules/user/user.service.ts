@@ -125,14 +125,17 @@ const getSingleUserFromDB = async (id: string, currentUserId?: string) => {
   const userObject: any = user.toObject();
   userObject.followersCount = user.followers?.length || 0;
   userObject.followingCount = user.following?.length || 0;
-  userObject.isFollowing = currentUserId 
+  userObject.isFollowing = currentUserId
     ? user.followers.some((f: any) => f._id.toString() === currentUserId)
     : false;
 
   return userObject;
 };
 
-const getFollowersAndFollowing = async (userId: string, currentUserId: string) => {
+const getFollowersAndFollowing = async (
+  userId: string,
+  currentUserId: string
+) => {
   const user = await User.findById(userId)
     .populate('followers', 'name email profilePhoto isVerified')
     .populate('following', 'name email profilePhoto isVerified');
@@ -143,7 +146,9 @@ const getFollowersAndFollowing = async (userId: string, currentUserId: string) =
 
   const followers = user.followers.map((follower: any) => ({
     ...follower.toObject(),
-    isFollowing: user.following.some((f: any) => f._id.toString() === follower._id.toString()),
+    isFollowing: user.following.some(
+      (f: any) => f._id.toString() === follower._id.toString()
+    ),
   }));
 
   const following = user.following.map((followedUser: any) => ({
@@ -156,7 +161,10 @@ const getFollowersAndFollowing = async (userId: string, currentUserId: string) =
     following,
     followersCount: followers.length,
     followingCount: following.length,
-    isFollowing: user.followers.some((f: any) => f._id.toString() === currentUserId),
+    isFollowing: user.followers.some(
+      (f: any) => f._id.toString() === currentUserId
+    ),
+    payments: user.payments,
   };
 };
 
@@ -193,8 +201,10 @@ const unfollowUser = async (userId: string, followerId: string) => {
     throw new Error('Not following this user');
   }
 
-  user.followers = user.followers.filter(id => id.toString() !== followerId);
-  follower.following = follower.following.filter(id => id.toString() !== userId);
+  user.followers = user.followers.filter((id) => id.toString() !== followerId);
+  follower.following = follower.following.filter(
+    (id) => id.toString() !== userId
+  );
 
   await user.save();
   await follower.save();
@@ -217,28 +227,44 @@ export const AuthServices = {
   followUser,
   unfollowUser,
   deleteUser: async (userId: string) => {
-    const user = await User.findByIdAndUpdate(userId, { isDeleted: true }, { new: true });
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { isDeleted: true },
+      { new: true }
+    );
     if (!user) {
       throw new Error('User not found');
     }
     return { message: 'User deleted successfully', user };
   },
   blockUser: async (userId: string) => {
-    const user = await User.findByIdAndUpdate(userId, { isBlocked: true }, { new: true });
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { isBlocked: true },
+      { new: true }
+    );
     if (!user) {
       throw new Error('User not found');
     }
     return { message: 'User blocked successfully', user };
   },
   unblockUser: async (userId: string) => {
-    const user = await User.findByIdAndUpdate(userId, { isBlocked: false }, { new: true });
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { isBlocked: false },
+      { new: true }
+    );
     if (!user) {
       throw new Error('User not found');
     }
     return { message: 'User unblocked successfully', user };
   },
   makeAdmin: async (userId: string) => {
-    const user = await User.findByIdAndUpdate(userId, { role: 'admin' }, { new: true });
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { role: 'admin' },
+      { new: true }
+    );
     if (!user) {
       throw new Error('User not found');
     }
@@ -252,7 +278,11 @@ export const AuthServices = {
     return { message: 'User deleted successfully' };
   },
   demoteAdminToUser: async (userId: string) => {
-    const user = await User.findByIdAndUpdate(userId, { role: 'user' }, { new: true });
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { role: 'user' },
+      { new: true }
+    );
     if (!user) {
       throw new Error('User not found');
     }

@@ -21,6 +21,7 @@ const UserSchema: Schema = new Schema<TUser>(
     isDeleted: { type: Boolean, default: false },
     isBlocked: { type: Boolean, default: false },
     posts: [{ type: Schema.Types.ObjectId, ref: 'Post' }],
+    payments: [{ type: Schema.Types.ObjectId, ref: 'Payment' }],
   },
   { timestamps: true }
 );
