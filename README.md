@@ -1,3 +1,7 @@
+<div align="center">
+  <h1>TechWave: Ride the Tide of Innovation 🌊</h1>
+</div>
+
 # **Project Setup and Configuration Guide**
 
 ## **Description**
@@ -15,10 +19,9 @@ First, you need to clone the project repository from your version control platfo
 Open your terminal and execute the following command:
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/al-shaimon/tech-wave-server.git
 ```
 
-Replace `<repository-url>` with the actual URL of your repository.
 
 ## **2. Navigate to the Project Directory**
 
@@ -151,6 +154,7 @@ Complete your `.env` file with the following variables:
 
 ```bash
 NODE_ENV=development
+NODE_ENV_STRIPE=test
 PORT=3000
 BCRYPT_SALT_ROUNDS=12
 JWT_ACCESS_SECRET=secret
