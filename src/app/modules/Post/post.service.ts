@@ -30,7 +30,7 @@ const getAllPostsFromDB = async (query: Record<string, unknown>) => {
     .fields();
 
   const result = await postQuery.modelQuery
-    .populate('user', 'name email profilePhoto')
+    .populate('user')
     .populate('category', 'name')
     .populate({
       path: 'comments',

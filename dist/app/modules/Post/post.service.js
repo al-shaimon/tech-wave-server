@@ -36,7 +36,7 @@ const getAllPostsFromDB = (query) => __awaiter(void 0, void 0, void 0, function*
         .paginate()
         .fields();
     const result = yield postQuery.modelQuery
-        .populate('user', 'name email profilePhoto')
+        .populate('user')
         .populate('category', 'name')
         .populate({
         path: 'comments',
