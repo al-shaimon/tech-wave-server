@@ -40,6 +40,8 @@ router.put(
   AuthControllers.updateUserAsAdmin
 );
 
+router.get('/users', AuthControllers.getAllUsers);
+
 router.get(
   '/admin/users',
   authMiddleware,
