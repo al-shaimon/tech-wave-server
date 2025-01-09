@@ -18,6 +18,7 @@ router.post('/forget-password', (0, validateRequest_1.default)(user_validation_1
 router.post('/reset-password/:token', (0, validateRequest_1.default)(user_validation_1.AuthValidations.resetPasswordSchema), user_controller_1.AuthControllers.resetPassword);
 router.post('/update-profile', authMiddleware_1.default, (0, validateRequest_1.default)(user_validation_1.AuthValidations.updateProfileSchema), user_controller_1.AuthControllers.updateProfile);
 router.put('/admin/users/:userId', authMiddleware_1.default, adminMiddleware_1.adminMiddleware, (0, validateRequest_1.default)(user_validation_1.AuthValidations.updateUserAsAdminSchema), user_controller_1.AuthControllers.updateUserAsAdmin);
+router.get('/users', user_controller_1.AuthControllers.getAllUsers);
 router.get('/admin/users', authMiddleware_1.default, adminMiddleware_1.adminMiddleware, user_controller_1.AuthControllers.getAllUsers);
 router.post('/follow/:userId', authMiddleware_1.default, user_controller_1.AuthControllers.followUser);
 router.post('/unfollow/:userId', authMiddleware_1.default, user_controller_1.AuthControllers.unfollowUser);
