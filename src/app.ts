@@ -16,7 +16,7 @@ app.use(cookieParser());
 //cors
 app.use(
   cors({
-    origin: ['http://localhost:3000', 'https://tech-wave-client.vercel.app'],
+    origin: config.ORIGIN,
     credentials: true,
   })
 );
